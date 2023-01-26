@@ -4,6 +4,7 @@ from pydantic.types import conint
 from datetime import datetime
 from enum import IntEnum
 
+
 class PostBase(BaseModel):
     title: str
     content: str
@@ -32,12 +33,14 @@ class PostResponse(PostBase):
     class Config:
         orm_mode = True
 
+
 class PostVotes(BaseModel):
     Post: PostResponse
     votes: int
-    
+
     class Config:
         orm_mode = True
+
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -61,7 +64,8 @@ class TokenData(BaseModel):
 class Direction(IntEnum):
     add_vote = 1
     delete_vote = 0
-    
+
+
 class Vote(BaseModel):
     post_id: int
     dir: Direction

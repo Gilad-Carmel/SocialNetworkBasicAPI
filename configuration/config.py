@@ -1,6 +1,7 @@
 from pydantic import BaseSettings
 import configuration.defaults as defaults
 
+
 class Settings(BaseSettings):
     POSTGRES_HOST: str = defaults.POSTGRES_HOST
     POSTGRES_PORT: int = defaults.POSTGRES_PORT
