@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel, EmailStr
 from pydantic.types import conint
 from datetime import datetime
-
+from enum import IntEnum
 
 class PostBase(BaseModel):
     title: str
@@ -52,6 +52,10 @@ class TokenData(BaseModel):
     id: Optional[str] = None
 
 
+class Direction(IntEnum):
+    add_vote = 1
+    delete_vote = 0
+    
 class Vote(BaseModel):
     post_id: int
-    dir: conint(le=1)
+    dir: Direction
