@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.params import Body
 from sqlalchemy.orm import Session
-
+from sqlalchemy import func
 from .. import models, oauth2, schemas
 from ..database import get_db
 
@@ -13,13 +13,23 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[schemas.PostResponse])
+@router.get("/", response_model=List[schemas.PostVotes])
 def get_posts(db: Session = Depends(get_db),
                limit: int = 10,
               skip: int = 0,
               search: Optional[str] = ""):
-
-    return db.query(models.Post).filter(models.Post.title.contains(search)).limit(limit).offset(skip).all()
+    
+    # select posts.id, count(votes.post_id) 
+    # from posts 
+    #   left join votes ON votes.post_id = posts.id 
+    # group by posts.id 
+    posts = db.query(models.Post, func.count(models.Vote.post_id).label("votes")).join(
+        models.Vote, models.Vote.post_id == models.Post.id, isouter=True).group_by(
+            models.Post.id).filter(
+        models.Post.title.contains(search)).limit(
+            limit).offset(
+                skip).all()
+    return posts
 
 
 @router.get("/{id}")
@@ -90,4 +100,3 @@ def update_post(id: int,
     db.commit()
 
     return post_query.first()
-3
