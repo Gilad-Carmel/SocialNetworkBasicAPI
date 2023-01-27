@@ -18,10 +18,6 @@ def get_posts(
     search: Optional[str] = "",
 ):
 
-    # select posts.id, count(votes.post_id)
-    # from posts
-    #   left join votes ON votes.post_id = posts.id
-    # group by posts.id
     posts = (
         db.query(models.Post, func.count(models.Vote.post_id).label("votes"))
         .join(models.Vote, models.Vote.post_id == models.Post.id, isouter=True)
