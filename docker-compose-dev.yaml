@@ -1,0 +1,26 @@
+version: "3"
+services:
+  api:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - 8000:8000
+    volumes:
+      - ./:/code/:ro
+    env_file:
+      - ./.env
+    
+    
+
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=fastapi
+    volumes:
+      - "./pg-docker/pg-db:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+
